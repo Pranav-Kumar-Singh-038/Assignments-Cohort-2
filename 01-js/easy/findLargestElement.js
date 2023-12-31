@@ -4,9 +4,17 @@
   - Input: [3, 7, 2, 9, 1]
   - Output: 9
 */
-
+//npx jest ./tests/
 function findLargestElement(numbers) {
-    
+    let maxElement=numbers[0];
+    for(let i=0;i<numbers.length;i++)
+    {
+        if(numbers[i]>maxElement)
+        {
+            maxElement=numbers[i];
+        }
+    }
+    return maxElement;
 }
 
 module.exports = findLargestElement;
