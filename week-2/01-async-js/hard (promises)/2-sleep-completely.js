@@ -3,8 +3,20 @@
  * During this time the thread should not be able to do anything else.
  * the function should return a promise just like before
  */
+function busyWait(milliseconds) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < milliseconds) 
+  {
+  }
+}
 
 function sleep(milliseconds) {
+  let p = new Promise(function (resolve) {
+    busyWait(milliseconds);
+    resolve();
+  });
+  return p;
 }
+
 
 module.exports = sleep;
