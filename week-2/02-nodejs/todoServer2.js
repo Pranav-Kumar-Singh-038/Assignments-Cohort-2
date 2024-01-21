@@ -40,93 +40,98 @@
   Testing the server - run `npm run test-todoServer` command in terminal
  */
 const express = require('express');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 
-let todos = []
 let count = 0;
+let todos = [];
+const fileContent = fs.readFileSync('./files/a.txt', 'utf8');
+todos = JSON.parse(fileContent);
 
 function generateID() {
-  const max = 99999;
-  const min = 10000;
-  let ans = min + count;
-  count++;
-  return ans;
+    const max = 99999;
+    const min = 10000;
+    let ans = min + count;
+    count++;
+    return ans;
 }
 
 function findID(idTofind) {
-  for (let i = 0; i < todos.length; i++) {
-    if (todos[i].id == idTofind) {
-      return i;
+    for (let i = 0; i < todos.length; i++) {
+        if (todos[i].id == idTofind) {
+            return i;
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 app.get("/todos/", function (req, res) {
-  res.status(200).json(todos);
+    res.status(200).json(todos);
 })
 
 app.get("/todos/:id", function (req, res) {
-  const id = req.params.id;
-  let index = findID(id);
-  if (index !== false) {
-    res.status(200).json(todos[index])
-  }
-  else {
-    res.status(404).json({ msg: "Not Found" });
-  }
+    const id = req.params.id;
+    let index = findID(id);
+    if (index !== false) {
+        res.status(200).json(todos[index])
+    }
+    else {
+        res.status(404).json({ msg: "Not Found" });
+    }
 })
 
 app.post("/todos/", function (req, res) {
-  let name = req.body.title;
-  let desc = req.body.description;
-  let ID = generateID();
-  let status = req.body.completed;
-  let todo = {
-    title: name,
-    completed: status,
-    description: desc,
-    id: ID
-  }
-  todos.push(todo);
-  res.status(201).json({ msg: "Created", id: ID });
+    let name = req.body.title;
+    let desc = req.body.description;
+    let ID = generateID();
+    let status = req.body.completed;
+    let todo = {
+        title: name,
+        completed: status,
+        description: desc,
+        id: ID
+    }
+    todos.push(todo);
+    fs.writeFileSync('./files/a.txt', JSON.stringify(todos), 'utf8');
+    res.status(201).json({ msg: "Created", id: ID });
 })
 
 app.put("/todos/:id", function (req, res) {
-  const id = req.params.id;
-  let index = findID(id);
-  if (index !== false) {
-    res.status(200).json({ msg: "OK" })
-    let name = req.body.title;
-    let desc = req.body.description;
-    let status = req.body.completed;
-    let ID = todos[index].id;
-    let todo = {
-      title: name,
-      completed: status,
-      description: desc,
-      id: ID
+    const id = req.params.id;
+    let index = findID(id);
+    if (index !== false) {
+        res.status(200).json({ msg: "OK" })
+        let name = req.body.title;
+        let desc = req.body.description;
+        let status = req.body.completed;
+        let ID = todos[index].id;
+        let todo = {
+            title: name,
+            completed: status,
+            description: desc,
+            id: ID
+        }
+        todos[index] = todo;
+        fs.writeFileSync('./files/a.txt', JSON.stringify(todos), 'utf8');
     }
-    todos[index] = todo;
-  }
-  else {
-    res.status(404).json({ msg: "Not Found" });
-  }
+    else {
+        res.status(404).json({ msg: "Not Found" });
+    }
 })
 
 app.delete("/todos/:id", function (req, res) {
-  const id = req.params.id;
-  let index = findID(id);
-  if (index !== false) {
-    res.status(200).json({ msg: "OK" })
-    todos.splice(index, 1);
-  }
-  else {
-    res.status(404).json({ msg: "Not Found" });
-  }
+    const id = req.params.id;
+    let index = findID(id);
+    if (index !== false) {
+        res.status(200).json({ msg: "OK" })
+        todos.splice(index, 1);
+        fs.writeFileSync('./files/a.txt', JSON.stringify(todos), 'utf8');
+    }
+    else {
+        res.status(404).json({ msg: "Not Found" });
+    }
 })
-
-app.listen(3000);
 module.exports = app;
+app.listen(3000);
