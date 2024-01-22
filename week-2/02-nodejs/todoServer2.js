@@ -47,7 +47,7 @@ app.use(bodyParser.json());
 
 let count = 0;
 let todos = [];
-const fileContent = fs.readFileSync('./files/a.txt', 'utf8');
+const fileContent = fs.readFileSync('todos.json', 'utf8');
 todos = JSON.parse(fileContent);
 
 function generateID() {
@@ -94,7 +94,7 @@ app.post("/todos/", function (req, res) {
         id: ID
     }
     todos.push(todo);
-    fs.writeFileSync('./files/a.txt', JSON.stringify(todos), 'utf8');
+    fs.writeFileSync('todos.json', JSON.stringify(todos), 'utf8');
     res.status(201).json({ msg: "Created", id: ID });
 })
 
@@ -114,7 +114,7 @@ app.put("/todos/:id", function (req, res) {
             id: ID
         }
         todos[index] = todo;
-        fs.writeFileSync('./files/a.txt', JSON.stringify(todos), 'utf8');
+        fs.writeFileSync('todos.json', JSON.stringify(todos), 'utf8');
     }
     else {
         res.status(404).json({ msg: "Not Found" });
@@ -127,7 +127,7 @@ app.delete("/todos/:id", function (req, res) {
     if (index !== false) {
         res.status(200).json({ msg: "OK" })
         todos.splice(index, 1);
-        fs.writeFileSync('./files/a.txt', JSON.stringify(todos), 'utf8');
+        fs.writeFileSync('todos.json', JSON.stringify(todos), 'utf8');
     }
     else {
         res.status(404).json({ msg: "Not Found" });
