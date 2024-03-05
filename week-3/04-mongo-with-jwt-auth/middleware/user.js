@@ -1,6 +1,18 @@
+const { Admin, User, Course } = require("../db/index");
+const jwtPassword = "123456";
+const jwt = require('jsonwebtoken');
+
 function userMiddleware(req, res, next) {
-    // Implement user auth logic
-    // You need to check the headers and validate the user from the user DB. Check readme for the exact headers to be expected
+  const token = req.headers.authorization;
+  try {
+    const adminData=jwt.verify(token, jwtPassword);
+    if(adminData){
+      next();
+    }
+  }
+  catch (error) {
+    res.send("Invalid Token")
+  }
 }
 
 module.exports = userMiddleware;
