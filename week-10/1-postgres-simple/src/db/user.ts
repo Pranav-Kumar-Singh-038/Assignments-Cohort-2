@@ -10,6 +10,9 @@ import { client } from "..";
  * }
  */
 export async function createUser(username: string, password: string, name: string) {
+    try{
+        
+    }
     
 }
 
