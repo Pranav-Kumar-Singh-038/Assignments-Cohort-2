@@ -1,4 +1,13 @@
-import { Client } from "..";
+import { client } from "../index";
+
+interface Todo {
+    id: number;
+    user_id: number;
+    title: string;
+    description: string;
+    done: boolean;
+}
+
 /*
  * Function should insert a new todo for this user
  * Should return a todo object
@@ -9,21 +18,12 @@ import { Client } from "..";
  *  id: number
  * }
  */
-export async function createTodo(userId: number, title: string, description: string) {
-    try{
-        await Client.connect();
-        const res=await Client.query(`
-            INSERT INTO todos (userId, title, description)
+export async function createTodo(userId: number, title: string, description: string): Promise<Todo> {
+    const res = await client.query(`
+            INSERT INTO todos (user_id, title, description)
             VALUES ($1, $2, $3) RETURNING *
-            `,[userId, title, description]);
-        console.log(`Data added successfully: ${res}`)
-    }
-    catch(err)
-    {
-     console.error(`Error inserting user data: ${err}`)
-    }finally{
-        await Client.end()
-    }
+            `, [userId, title, description]);
+    return res.rows[0] ;
 }
 /*
  * mark done as true for this specific todo.
@@ -35,22 +35,13 @@ export async function createTodo(userId: number, title: string, description: str
  *  id: number
  * }
  */
-export async function updateTodo(todoId: number) {
- try{
-   await Client.connect();
-   const res=await Client.query(`
+export async function updateTodo(todoId: number): Promise<Todo > {
+    const res = await client.query(`
     UPDATE todos
     SET done=true
-    WHERE todoId=$1 
+    WHERE id=$1 
     RETURNING *`, [todoId])
-    console.log("todo updated successfully",JSON.stringify(res.rows[0], null, 2));
- }
- catch(err)
- {
-    console.error(`Error inserting user data: ${err}`)
- }finally{
-    await Client.end();
- }
+    return res.rows[0];
 }
 
 /*
@@ -63,18 +54,9 @@ export async function updateTodo(todoId: number) {
  *  id: number
  * }]
  */
-export async function getTodos(userId: number) {
-    try{
-        await Client.connect();
-        const res=await Client.query(`
+export async function getTodos(userId: number): Promise<Todo[]> {
+        const res = await client.query(`
          SELECT * FROM todos
-         WHERE userId=$1 `, [userId])
-         console.log("todo fetched successfully",JSON.stringify(res.rows[0], null, 2));
-      }
-      catch(err)
-      {
-         console.error(`Error gettings user Todos: ${err}`)
-      }finally{
-         await Client.end();
-      }
+         WHERE user_id=$1 `, [userId])
+         return res.rows ;
 }
