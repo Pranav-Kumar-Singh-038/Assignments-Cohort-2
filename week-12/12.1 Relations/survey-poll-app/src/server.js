@@ -1,14 +1,15 @@
 const express = require('express');
-const cors = require("cors");
-const rootRouter = require("./routes/index");
+const surveyRoutes = require('./routes/surveyRoutes');
+const config = require('./config');
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 
-app.use("/api/v1", rootRouter);
+app.use('/api/surveys', surveyRoutes);
 
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+const port = config.port;
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

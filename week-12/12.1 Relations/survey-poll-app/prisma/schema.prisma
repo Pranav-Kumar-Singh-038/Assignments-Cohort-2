@@ -15,7 +15,7 @@ datasource db {
 
 model Surveys {
   id        Int         @id @default(autoincrement())
-  name      String      @unique
+  title     String      @unique
   questions Questions[]
 }
 
