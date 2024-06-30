@@ -36,6 +36,46 @@ const createSurvey = async (surveyData) => {
     });
 };
 
+const fetchSurvey = async () => {
+    return await prisma.surveys.findMany({
+        
+    });
+};
+
+const fetchSurveyOne = async (id) => {
+    return await prisma.surveys.findMany({
+        where:{id:id}
+    });
+};
+
+const updateSurvey = async (updateData, id) => {
+    const { title, questions } = updateData;
+
+    return await prisma.surveys.update({
+        data: {
+            title: title,
+            questions: {
+                create: questions.map(question => ({
+                    text: question.text,
+                    options: {
+                        create: question.options.map(option => ({
+                            text: option.text,
+                            votes: option.votes || 0,
+                        })),
+                    },
+                })),
+            },
+        },
+        where:{id:id}
+    });
+};
+
+const deleteSurveyOne = async (id) => {
+    return await prisma.surveys.delete({
+        where:{id:id}
+    });
+};
+
 module.exports = {
-    createSurvey,
+    createSurvey, fetchSurvey, fetchSurveyOne, updateSurvey, deleteSurveyOne
 };

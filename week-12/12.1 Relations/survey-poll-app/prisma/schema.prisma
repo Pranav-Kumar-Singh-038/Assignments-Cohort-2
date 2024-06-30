@@ -23,7 +23,7 @@ model Questions {
   id       Int       @id @default(autoincrement())
   text     String
   surveyId Int
-  survey   Surveys   @relation(fields: [surveyId], references: [id])
+  survey   Surveys    @relation(fields: [surveyId], references: [id], onDelete: Cascade)
   options  Options[]
 }
 
@@ -32,5 +32,5 @@ model Options {
   text       String
   votes      Int       @default(0)
   questionId Int
-  question   Questions @relation(fields: [questionId], references: [id])
+  question   Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
